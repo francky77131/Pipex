@@ -1,0 +1,85 @@
+----------------------**Function Fork**----------------------
+
+la fonction fork va reproduire le process de mon programme et retourner un int.
+si j'appelle fork dans mon programme qui contient un printf (exemple),
+alors mon printf s'afficherra deux fois.
+fork va en quelque sorte creer un process child(enfant)
+en reproduisant le main process(parent).
+en appelant 2 fois fork (ou plus) le premier fork creera un child du main process,
+le second fork creera un child du main process mais aussi un child du child du premier
+process.
+
+ex :
+fork1()
+fork2()
+main process (printf("hello"))
+fork1() = child1 (qui reproduit le main process)
+fork2() = child2 (qui reproduit le main process et aussi le child1 process)
+
+on ce retrouve donc avec le printf du main process, du child1 (premier fork), 
+du child2 (encore du main process) 
+et le child2 (second fork) va aussi reproduire le child1.
+nous nous retrouvons donc avec 4 printf("hello") en appelant deux fois fork.
+Donc le main process sera reproduit nbfork ^(puissance) 2 (2 ^ 2 = 4) voila pourquoi
+nous nous retrouvons avec 4 printf.
+
+int id;
+id = fork();
+if (id != 0)
+	fork();
+printf("hello %d\n", id);
+
+grace a la variable "id" je peut savoir si c'est le main process (qui renvoi toujours 0),
+ou si je suis sur le child process (qui lui renvoi un int != 0).
+Avec ma condition "if (id != 0)" je lui dit de faire le econd fork
+seulement quand il est != de 0 donc de faire ce second fork seulement sur
+mon child process.
+grace a ca je pourrais ne faire que 3 process et evite que mon second fork ne rappel 
+le main process.
+
+int	main(int argc, char **argv)
+{
+	(void)argv;
+	(void)argc;
+	int id;
+	int n;
+	n = 1;
+	id = fork();
+	wait(NULL);
+	if (id != 0)
+	{
+		n = 6;
+		while(n <= 10)
+		{
+			printf("main %d ", n);
+			n++;
+		}	
+	}
+	if (id == 0)
+	{
+		n = 1;
+		while(n <= 5)
+		{
+			printf("child %d ", n);
+			n++;
+		}	
+	}
+	if (id != 0)
+		printf("\n");
+	return (0);
+}
+
+me permet grace a l'id d'afficher des nombre de 1 a 5 avec le child et de 6 a 10
+avec le main process et grace au wait de faire les etape dans l'ordre(voir Function Wait).
+
+le main process et le child process fonctionne en meme temps
+et non pas un a la suite de l'autre (c'est la qu'entre en jeu la fonction wait !).
+
+----------------------**Function Wait**----------------------
+
+La fonction wait(); permet simplement de mettre en attente le main process pour qu'il
+effectue tous ce qu'il y a faire dans le child process puis enssuite executer le main
+process. (voir code ci-dessus).
+
+Wait retourne -1 quand il n'y a pas ou plus de child process a attendre et retourne l'id
+du main process quand l'execution prend fin. 
