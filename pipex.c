@@ -6,7 +6,14 @@
 /*   By: frgojard <frgojard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 09:07:07 by frgojard          #+#    #+#             */
-/*   Updated: 2022/10/25 09:07:09 by frgojard         ###   ########.fr       */
+/*   Updated: 2022/11/23 10:02:21 by frgojard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "pipex.h"
+
+int	main()
+{
+	ft_printf("test\n");
+	return (0);
+}

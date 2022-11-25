@@ -83,3 +83,161 @@ process. (voir code ci-dessus).
 
 Wait retourne -1 quand il n'y a pas ou plus de child process a attendre et retourne l'id
 du main process quand l'execution prend fin. 
+
+----------------------**Function Wait**----------------------
+
+La fonction pipe me permet de faire communiquer mon main process et mon child process 
+et ainsi de les faire travailler enssmble et de leur faire accomplir des tavhe differente.
+
+elle retourne -1 en cas d'erreur.
+
+
+int	main(int argc, char **argv)
+{
+	(void)argv;
+	(void)argc;
+	int	arr[] = { 1, 2, 3, 4, 1, 2 };
+	int fd[2];
+	int id;
+	int start;
+	int end;
+	int arrsize = sizeof(arr) / sizeof(int);
+	int i;
+	int sum;
+
+	if (pipe(fd) == -1)
+		return (1);
+	id = fork();
+	if (id == -1)
+		return (1);
+	if (id == 0)
+	{
+		start = 0;
+		end = arrsize / 2;
+	}
+	else 
+	{
+		start = arrsize / 2;
+		end = arrsize;
+	}
+	sum = 0;
+	i = start;
+	while (i < end)
+	{
+		sum += arr[i];
+		i++;
+	}
+	printf("Partial sum %d\n", sum);
+	if (id == 0)
+	{
+		close(fd[0]);
+		write (fd[1], &sum, sizeof(sum));
+		close(fd[1]);
+	}
+	else
+	{
+		int sumchild;
+		close(fd[1]);
+		read(fd[0], &sumchild, sizeof(sumchild));
+		close(fd[0]);
+		int total;
+		total = sum + sumchild;
+		printf("result total sum : %d\n", total);
+		wait(NULL);
+	}
+	return (0);
+}
+
+exemple de communiquation entre le main process et le child process.
+j'additionne la moitier de mon tableau avec le main process et l'autre moitier avec 
+le child process.
+puis grace au pipe je recupere le resultat du child pour l'envoyer dans le main et additionneer les deux resultat
+pour me retrouver avec la omme total de mon array.
+
+int	main(int argc, char **argv)
+{
+	(void)argv;
+	(void)argc;
+	int	arr[] = { 1, 2, 3, 4, 1, 2, 7, 8 };
+	int p1[2];
+	int p2[2];
+	int id;
+	if (pipe(p1) == -1)
+		return (1);
+	if (pipe(p2) == -1)
+		return (1);
+	id = fork();
+	if (id == -1)
+		return (1);
+	if (id == 0)
+	{
+		close(p1[0]);
+		close(p2[1]);
+		int x;
+		if (read(p2[0], &x, sizeof(x)) == -1)
+			return (1);
+		printf("x recus du child : %d\n", x);
+		x *= 4;
+		if (write(p1[1], &x, sizeof(x)) == -1)
+			return (1);
+		printf("x apres : %d\n", x);
+		close(p2[0]);
+		close(p1[1]);
+	}
+	else
+	{
+		close(p1[1]);
+		close(p2[0]);
+		int y = 5;
+		if (write(p2[1], &y, sizeof(y)) == -1)
+			return (1);
+		printf("y :%d\n", y);
+		if (read(p1[0], &y, sizeof(y)) == -1)
+			return (1);
+		printf("resultat : %d\n", y);
+		close(p2[1]);
+		close(p1[0]);
+		wait(NULL);
+	}
+	return (0);
+}
+
+meme code mais avec deux pipe qui permet d'eviter certaine erreur.
+
+
+
+
+
+
+
+
+int	main(int argc, char **argv, char *envp[])
+{
+	(void)argv;
+	(void)argc;
+	char	cmd[] = {"/usr/bin/ls"};
+	int id;
+	int file1;
+	int file2;
+	int err;
+	id = fork();
+	if (id == -1)
+		return (2);
+	file1 = open("infile.txt", O_WRONLY);
+	if (id == 0)
+	{
+		file2 = dup2(file1, 1);
+		err = execve(cmd, argv, envp);
+		if (err == -1)
+			return (2);
+	}
+	else
+	{
+		wait(NULL);
+		printf("Ca marche !!!\n");
+	}
+	return (0);
+}
+
+
+Ce code permet de ls et d'ecrire le contenu du ls dans le infile.txt
