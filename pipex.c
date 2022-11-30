@@ -6,14 +6,14 @@
 /*   By: frgojard <frgojard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 09:07:07 by frgojard          #+#    #+#             */
-/*   Updated: 2022/11/23 10:02:21 by frgojard         ###   ########.fr       */
+/*   Updated: 2022/11/30 10:09:37 by frgojard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main()
+int	main(int argc, char **argv, char *env[])
 {
-	ft_printf("test\n");
+
 	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: frgojard <frgojard@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/14 14:20:55 by frgojard          #+#    #+#              #
-#    Updated: 2022/11/23 10:02:31 by frgojard         ###   ########.fr        #
+#    Updated: 2022/11/30 11:11:15 by frgojard         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ RM = rm -f
 
 LIBFT = ./libft/libft.a
 
-SRC =	pipex.c \
+SRC =	main.c \
 
 OBJ = $(SRC:.c=.o)
 
